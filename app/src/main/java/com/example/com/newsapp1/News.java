@@ -1,5 +1,7 @@
 package com.example.com.newsapp1;
 
+import android.graphics.Bitmap;
+
 public class News {
 
     /**
@@ -27,12 +29,18 @@ public class News {
      */
     private String mUrl;
 
-    public News(String section, String title, String author, String time, String url) {
+    /**
+     * thumbnail of the news article - a picture.
+     */
+    private Bitmap mthumbnail;
+
+    public News(String section, String title, String author, String time, String url, Bitmap thumbnail) {
         mSection = section;
         mTitle = title;
         mAuthor = author;
         mTime = time;
         mUrl = url;
+        mthumbnail = thumbnail;
     }
 
     public String getSection() {return mSection;}
@@ -47,5 +55,9 @@ public class News {
 
     public String getUrl() {
         return mUrl;
+    }
+
+    public Bitmap getThumbnail() {
+        return mthumbnail;
     }
 }

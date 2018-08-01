@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     public static final String LOG_TAG = MainActivity.class.getName();
 
-    private static final String THE_GUARDIAN_REQUEST_URL = "https://content.guardianapis.com/search?page-size=50&from-date=2018-01-01&api-key=4b884723-7021-4e84-a575-9fda381de06f&show-tags=contributor";
+    private static final String THE_GUARDIAN_REQUEST_URL = "https://content.guardianapis.com/search?q=news&api-key=4b884723-7021-4e84-a575-9fda381de06f&show-tags=contributor&show-fields=thumbnail&show-refinements=all&order-by=relevance";
 
     /**
      * Constant value for the earthquake loader ID. We can choose any integer.

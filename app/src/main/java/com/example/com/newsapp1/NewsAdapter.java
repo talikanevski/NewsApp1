@@ -2,12 +2,14 @@ package com.example.com.newsapp1;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -58,9 +60,12 @@ public class NewsAdapter extends ArrayAdapter<News> {
         TextView authorTextView = (TextView) listItemView.findViewById(R.id.author);
         authorTextView.setText(currentArticle.getAuthor());
 
-
         TextView dateView = (TextView) listItemView.findViewById(R.id.date);
         dateView.setText((CharSequence) currentArticle.getTime());
+
+        /** Find the View in the list_item.xml layout with the thumbnail of the of the current news article**/
+        ImageView thumbnailImage = (ImageView) listItemView.findViewById(R.id.article_thumbnail);
+        thumbnailImage.setImageBitmap(currentArticle.getThumbnail());
 
         // Return the list item view that is now showing the appropriate data
         return listItemView;

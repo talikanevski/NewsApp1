@@ -1,5 +1,7 @@
 package com.example.com.newsapp1;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -35,6 +37,7 @@ public final class QueryUtils {
         String time;
         String url;
         String author;
+        String thumbnail;
 
         // If the JSON string is empty or null, then return early.
         if (TextUtils.isEmpty(jsonResponse)) {
@@ -73,6 +76,11 @@ public final class QueryUtils {
                 /** Extract the value for the key called "webUrl"**/
                 url = currentArticle.getString("webUrl");
 
+                /** Extract the value for the key called "fields"**/
+                JSONObject fields = currentArticle.getJSONObject("fields");
+                thumbnail = fields.getString("thumbnail");//if I am not sure that it will be a string there
+                //I can use fields.optString("thumbnail")...
+
                 /** Extract the value for the key called "tags" --> "webTitle",
                  * which represents author or "contributor"**/
                 JSONArray tagsArray = currentArticle.getJSONArray("tags");
@@ -83,8 +91,8 @@ public final class QueryUtils {
                     JSONObject tag = tagsArray.getJSONObject(j);
                     author = author + tag.getString("webTitle");
                 }
-               
-                News article = new News(section, title, author, time, url);
+
+                News article = new News(section, title, author, time, url, convertToBitmapImage(thumbnail));
                 news.add(article);
             }
 
@@ -98,6 +106,23 @@ public final class QueryUtils {
 
         // Return the list of news
         return news;
+    }
+    /** method to convert String thumbnail (which holds URL link of the image of the current article)
+     * to Bitmap of this image
+     * https://stackoverflow.com/questions/6932369/inputstream-from-a-url
+     * https://www.codota.com/code/java/methods/android.graphics.BitmapFactory/decodeStream**/
+    private static Bitmap convertToBitmapImage(String thumbnail) {
+        Bitmap bitmap = null;
+        try {
+            InputStream stream = new  URL(thumbnail).openStream();
+            bitmap = BitmapFactory.decodeStream(stream);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("QueryUtils", "Failed to create bitmap", e);
+
+        }
+        return bitmap;
     }
 
     /**
