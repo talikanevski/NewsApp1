@@ -4,41 +4,20 @@ import android.graphics.Bitmap;
 
 public class News {
 
-    /**
-     * section of the news article
-     */
-    private String mSection;
+    private String mSection; /*** section of the news article*/
+    private String mTitle; /** title of the news article  */
+    private String mAuthor;/**author of the news article */
+    private String mDate; /**date when the news article was published*/
+    private String mTime;/** Time when the news article was published */
+    private String mUrl; /*** Website URL of the news article*/
+    private Bitmap mthumbnail;/** thumbnail of the news article - a picture.*/
 
-    /**
-     * title of the news article
-     */
-    private String mTitle;
-
-    /**
-     * author of the news article
-     */
-    private String mAuthor;
-
-    /**
-     * Time when the news article was published
-     */
-    private String mTime;
-
-    /**
-     * Website URL of the news article
-     */
-    private String mUrl;
-
-    /**
-     * thumbnail of the news article - a picture.
-     */
-    private Bitmap mthumbnail;
-
-    public News(String section, String title, String author, String time, String url, Bitmap thumbnail) {
+    public News(String section, String title, String author, String date,String time, String url, Bitmap thumbnail) {
         mSection = section;
         mTitle = title;
         mAuthor = author;
         mTime = time;
+        mDate = date;
         mUrl = url;
         mthumbnail = thumbnail;
     }
@@ -49,6 +28,8 @@ public class News {
 
     public String getTitle() {return mTitle;}
 
+    public String getmDate() {return mDate;}
+
     public String getTime() {
         return mTime;
     }
@@ -57,7 +38,5 @@ public class News {
         return mUrl;
     }
 
-    public Bitmap getThumbnail() {
-        return mthumbnail;
-    }
+    public Bitmap getThumbnail() {return mthumbnail;}
 }

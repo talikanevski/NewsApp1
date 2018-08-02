@@ -20,7 +20,6 @@ public class NewsAdapter extends ArrayAdapter<News> {
 
     private static final String LOG_TAG = NewsAdapter.class.getSimpleName();
 
-
     public NewsAdapter(Activity context, ArrayList<News> news) {
 
         /**
@@ -51,17 +50,28 @@ public class NewsAdapter extends ArrayAdapter<News> {
         // Display the section of the current news article in that TextView
         sectionTextView.setText(currentArticle.getSection());
 
-        /** Find the TextView in the list_item.xml layout with the title of the of the current news article**/
-        TextView titleTextView = (TextView) listItemView.findViewById(R.id.title);
-        titleTextView.setText(currentArticle.getTitle());
-
-
         /** Find the TextView in the list_item.xml layout with the author of the of the current news article**/
         TextView authorTextView = (TextView) listItemView.findViewById(R.id.author);
         authorTextView.setText(currentArticle.getAuthor());
 
+        /** Find the TextView in the list_item.xml layout with the title of the of the current news article**/
+        TextView titleTextView = (TextView) listItemView.findViewById(R.id.title);
+
+        /** Some of the articles have the author's name in the and of the article,
+         * so I've decided to remove it**/
+        if (currentArticle.getTitle().contains(currentArticle.getAuthor())) {
+            String[] parts = currentArticle.getTitle().split(currentArticle.getAuthor());
+
+            titleTextView.setText(removeTheLastCharacter(parts[0]));
+        } else {
+            titleTextView.setText(currentArticle.getTitle());
+        }
+
         TextView dateView = (TextView) listItemView.findViewById(R.id.date);
-        dateView.setText((CharSequence) currentArticle.getTime());
+        dateView.setText((CharSequence) currentArticle.getmDate());
+
+        TextView timeView = (TextView) listItemView.findViewById(R.id.time);
+        timeView.setText((CharSequence) currentArticle.getTime());
 
         /** Find the View in the list_item.xml layout with the thumbnail of the of the current news article**/
         ImageView thumbnailImage = (ImageView) listItemView.findViewById(R.id.article_thumbnail);
@@ -72,18 +82,13 @@ public class NewsAdapter extends ArrayAdapter<News> {
     }
 
     /**
-     * Return the formatted date string (i.e. "Mar 3, 1984") from a Date object.
-     */
-    private String formatDate(Date dateObject) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("LLL dd, yyyy");
-        return dateFormat.format(dateObject);
+     * method to remove last 3 characters from the title after split
+     **/
+    public String removeTheLastCharacter(String str) {
+        if (str != null && str.length() > 0) {
+            str = str.substring(0, str.length() - 3);
+        }
+        return str;
     }
 
-    /**
-     * Return the formatted date string (i.e. "4:30 PM") from a Date object.
-     */
-    private String formatTime(Date dateObject) {
-        SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a");
-        return timeFormat.format(dateObject);
-    }
 }

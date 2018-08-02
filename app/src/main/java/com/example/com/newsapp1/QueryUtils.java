@@ -17,7 +17,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.example.com.newsapp1.MainActivity.LOG_TAG;
@@ -30,11 +32,12 @@ public final class QueryUtils {
     private QueryUtils() {
     }
 
-    private static List<News>   extractFeatureFromJson(String jsonResponse) {
+    private static List<News> extractFeatureFromJson(String jsonResponse) {
 
         String section;
         String title;
         String time;
+        String date;
         String url;
         String author;
         String thumbnail;
@@ -71,7 +74,14 @@ public final class QueryUtils {
                 title = currentArticle.getString("webTitle");
 
                 /** Extract the value for the key called "webPublicationDate" **/
-                time = currentArticle.getString("webPublicationDate");
+                String webPublicationDate = currentArticle.getString("webPublicationDate");
+
+                /**substring(int start, int end) -
+                 * Returns a new String that starts at the start index
+                 * and goes up to (but doesn’t include) the end index.
+                 * https://developer.android.com/reference/java/lang/String?utm_source=udacity&utm_medium=course&utm_campaign=android_basics#substring(int,%20int)**/
+                date = webPublicationDate.substring(0, 10);
+                time = webPublicationDate.substring(12, 16);
 
                 /** Extract the value for the key called "webUrl"**/
                 url = currentArticle.getString("webUrl");
@@ -92,7 +102,7 @@ public final class QueryUtils {
                     author = author + tag.getString("webTitle");
                 }
 
-                News article = new News(section, title, author, time, url, convertToBitmapImage(thumbnail));
+                News article = new News(section, title, author, date, time, url, convertToBitmapImage(thumbnail));
                 news.add(article);
             }
 
@@ -107,14 +117,17 @@ public final class QueryUtils {
         // Return the list of news
         return news;
     }
-    /** method to convert String thumbnail (which holds URL link of the image of the current article)
+
+    /**
+     * method to convert String thumbnail (which holds URL link of the image of the current article)
      * to Bitmap of this image
      * https://stackoverflow.com/questions/6932369/inputstream-from-a-url
-     * https://www.codota.com/code/java/methods/android.graphics.BitmapFactory/decodeStream**/
+     * https://www.codota.com/code/java/methods/android.graphics.BitmapFactory/decodeStream
+     **/
     private static Bitmap convertToBitmapImage(String thumbnail) {
         Bitmap bitmap = null;
         try {
-            InputStream stream = new  URL(thumbnail).openStream();
+            InputStream stream = new URL(thumbnail).openStream();
             bitmap = BitmapFactory.decodeStream(stream);
 
         } catch (IOException e) {

@@ -17,7 +17,6 @@ class NewsLoader extends AsyncTaskLoader<List<News>> {
     /** Tag for log messages */
     private static final String LOG_TAG = NewsLoader.class.getName();
 
-
     /** Query URL */
     private String mUrl;
 
@@ -37,12 +36,11 @@ class NewsLoader extends AsyncTaskLoader<List<News>> {
     public List<News> loadInBackground() {
         Log.i(LOG_TAG, "Test:  loadInBackground called");
 
-
         if (mUrl == null) {
             return null;
         }
 
-        // Perform the network request, parse the response, and extract a list of earthquakes.
+        // Perform the network request, parse the response, and extract a list of news.
         List<News> news = QueryUtils.fetchNewsData(mUrl);
         return news;
     }

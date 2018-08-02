@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     public static final String LOG_TAG = MainActivity.class.getName();
 
-    private static final String THE_GUARDIAN_REQUEST_URL = "https://content.guardianapis.com/search?q=news&api-key=4b884723-7021-4e84-a575-9fda381de06f&show-tags=contributor&show-fields=thumbnail&show-refinements=all&order-by=relevance";
+    private static final String THE_GUARDIAN_REQUEST_URL = "https://content.guardianapis.com/search?order-by=newest&page-size=50&q=news&api-key=4b884723-7021-4e84-a575-9fda381de06f&show-tags=contributor&show-fields=thumbnail&show-refinements=all";
 
     /**
      * Constant value for the earthquake loader ID. We can choose any integer.
@@ -77,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                 Uri articleUri = Uri.parse(currentArticle.getUrl());
 
-
                 /** Once we have the website URL in a Uri object, we can create a new intent**/
                 // Create a new intent to view the earthquake URI
                 Intent websiteIntent = new Intent(Intent.ACTION_VIEW, articleUri);
@@ -100,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // If there is a network connection, fetch data
         if (networkInfo != null && networkInfo.isConnected()) {
 
-
             /** to retrieve a news article, we need to get the loader manager
              *  and tell the loader manager to initialize the loader with the specified ID,
              *  the second argument allows us to pass a bundle of additional information, which we'll skip.
@@ -110,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
              *  so that the loader can be initialized as soon as the app opens.**/
 
             // Get a reference to the LoaderManager, in order to interact with loaders.
-            LoaderManager loaderManager = getLoaderManager();
+            final LoaderManager loaderManager = getLoaderManager();
 
             // Initialize the loader. Pass in the int ID constant defined above and pass in null for
             // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
@@ -119,6 +117,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             Log.i(LOG_TAG, "Test: calling initLoader");
 
             loaderManager.initLoader(NEWS_LOADER_ID, null, this);
+
+            /** if internet connection got lost and than back, we'll see mEmptyStateTextView
+             * with text "no internet connection"
+             * we need to reload the app and while it's reloading it's better to see a spinner**/
+            mEmptyStateTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    reload();
+                    View loading = findViewById(R.id.loading_spinner);
+                    loading.setVisibility(View.VISIBLE);
+                }
+            });
         } else {// Otherwise, display error
             // First, hide loading indicator so error message will be visible
             View loading = findViewById(R.id.loading_spinner);
@@ -145,8 +155,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         ProgressBar loading = findViewById(R.id.loading_spinner);
         loading.setVisibility(View.GONE);
 
-        // Set empty state text to display "No earthquakes found."
-        mEmptyStateTextView.setText(R.string.no_news);
+        /** in case the internet connection got lost in the middle**/
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        // Get details on the currently active default data network
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+            // Set empty state text to display "No news found."
+            mEmptyStateTextView.setText(R.string.no_news);
+        } else// Update empty state with no connection error message
+        {
+            mEmptyStateTextView.setText(R.string.no_internet);
+        }
 
         // Clear the adapter of previous news data
         mAdapter.clear();
@@ -164,5 +185,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // Loader reset, so we can clear out our existing data.
         mAdapter.clear();
+    }
+
+    public void reload() {
+        getLoaderManager().restartLoader(1, null, this);
     }
 }
