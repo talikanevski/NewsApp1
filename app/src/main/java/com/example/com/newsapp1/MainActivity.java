@@ -4,12 +4,16 @@ import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -23,8 +27,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     public static final String LOG_TAG = MainActivity.class.getName();
 
-    private static final String THE_GUARDIAN_REQUEST_URL = "https://content.guardianapis.com/search?order-by=newest&page-size=50&q=news&api-key=4b884723-7021-4e84-a575-9fda381de06f&show-tags=contributor&show-fields=thumbnail&show-refinements=all";
-
+    private static final String THE_GUARDIAN_REQUEST_URL ="https://content.guardianapis.com/search?api-key=4b884723-7021-4e84-a575-9fda381de06f";
+         /**   "https://content.guardianapis.com/search?show-tags=contributor&show-fields=thumbnail&page-size=20&from-date=2018-08-01&api-key=4b884723-7021-4e84-a575-9fda381de06f";
+    /** https://content.guardianapis.com/search?show-tags=contributor&show-fields=thumbnail&page-size=20&api-key=4b884723-7021-4e84-a575-9fda381de06f
+     * https://content.guardianapis.com/search?q=news%50AND%20OpinionAND%20cultureAnd%20lifestyle&show-fields=thumbnail&page-size=20&show-tags=contributor&api-key=4b884723-7021-4e84-a575-9fda381de06f**/
     /**
      * Constant value for the earthquake loader ID. We can choose any integer.
      */
@@ -144,8 +150,33 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         Log.i(LOG_TAG, "Test:  onCreateLoader called");
 
-        // Create a new loader for the given URL
-        return new NewsLoader(this, THE_GUARDIAN_REQUEST_URL);
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // getString retrieves a String value from the preferences. The second parameter is the default value for this preference.
+        String numberOfArticlesToDisplay = sharedPrefs.getString(
+                getString(R.string.settings_number_of_articles_key),
+                getString(R.string.settings_number_of_articles_default));
+
+        String orderBy  = sharedPrefs.getString(
+                getString(R.string.settings_order_by_key),
+                getString(R.string.settings_order_by_default)
+        );
+
+        // parse breaks apart the URI string that's passed into its parameter
+        Uri baseUri = Uri.parse(THE_GUARDIAN_REQUEST_URL);
+
+        // buildUpon prepares the baseUri that we just parsed so we can add query parameters to it
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+
+        // Append query parameter and its value. For example, the `format=geojson`
+        uriBuilder.appendQueryParameter("show-tags", "contributor");
+        uriBuilder.appendQueryParameter("show-fields", "thumbnail");
+        uriBuilder.appendQueryParameter("page-size", numberOfArticlesToDisplay);
+        uriBuilder.appendQueryParameter("orderby", orderBy);
+
+        /** Return the completed uri  "https://content.guardianapis.com/search?api-key=4b884723-7021-4e84-a575-9fda381de06f&show-tags=contributor&show-fields=thumbnail&page-size=20&orderby=newest"; **/
+
+        return new NewsLoader(this, uriBuilder.toString());
     }
 
     @Override
@@ -189,5 +220,42 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     public void reload() {
         getLoaderManager().restartLoader(1, null, this);
+    }
+
+    @Override
+    // This method initialize the contents of the Activity's options menu.
+    /** onCreateOptionsMenu() inflates the Options Menu specified in the XML
+     * when the MainActivity opens up, it actually make it visible.**/
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the Options Menu we specified in XML
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+    /** This method is where we can setup the specific action
+     * that occurs when any of the items in the Options Menu are selected.
+     *
+             * This method passes the MenuItem that is selected:
+
+    public boolean onOptionsItemSelected(MenuItem item)**/
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        /** An Options Menu may have one or more items.
+         *
+         * To determine which item was selected and what action to take,
+         * call getItemId, which returns the unique ID for the menu item
+         * (defined by the android:id attribute in the menu resource).**/
+
+        int id = item.getItemId();
+        /** In our case, our menu only has one item
+         *  (which we setup in main.xml)
+         * android:id="@+id/action_settings".**/
+        if (id == R.id.action_settings) {
+            /**  You then match the ID against known menu items to perform the appropriate action.
+             * In our case, we open the SettingsActivity via an intent.**/
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

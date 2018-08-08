@@ -39,6 +39,7 @@ public final class QueryUtils {
         String time;
         String date;
         String url;
+        String contributor;
         String author;
         String thumbnail;
 
@@ -95,12 +96,13 @@ public final class QueryUtils {
                  * which represents author or "contributor"**/
                 JSONArray tagsArray = currentArticle.getJSONArray("tags");
                 //  in the tagsArray:
-                author = "";
+                contributor = "";
                 for (int j = 0; j < tagsArray.length(); j++) {
 
                     JSONObject tag = tagsArray.getJSONObject(j);
-                    author = author + tag.getString("webTitle");
+                    contributor = contributor + " and " + tag.getString("webTitle");
                 }
+                author = removeUnnecessaryCharacters(contributor);
 
                 News article = new News(section, title, author, date, time, url, convertToBitmapImage(thumbnail));
                 news.add(article);
@@ -254,6 +256,15 @@ public final class QueryUtils {
 
         // Return the list of news
         return news;
+    }
+    /**
+     * method to remove first characters from the author String
+     **/
+    public static String removeUnnecessaryCharacters(String str) {
+        if (str != null && str.length() > 0) {
+            str = str.substring(5, str.length());
+        }
+        return str;
     }
 }
 

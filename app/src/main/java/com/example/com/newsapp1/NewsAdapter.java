@@ -59,7 +59,7 @@ public class NewsAdapter extends ArrayAdapter<News> {
 
         /** Some of the articles have the author's name in the and of the article,
          * so I've decided to remove it**/
-        if (currentArticle.getTitle().contains(currentArticle.getAuthor())) {
+        if (currentArticle.getTitle().contains(currentArticle.getAuthor()) && currentArticle.getAuthor()!= "") {
             String[] parts = currentArticle.getTitle().split(currentArticle.getAuthor());
 
             titleTextView.setText(removeTheLastCharacter(parts[0]));

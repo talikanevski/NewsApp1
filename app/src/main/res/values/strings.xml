@@ -1,6 +1,31 @@
 <resources>
-    <string name="app_name">News App 1</string>
+    <string name="app_name">News App</string>
     <string name="no_internet">No internet connection</string>
-    <string name="no_news">No News articles found</string>
+    <string name="no_news">No News updates available, please reload the app or check after some time...</string>
+    <string name="settings_menu_item">Settings</string>
+    <string name="settings_title">News Articles Settings</string>
+
+    <string name="settings_number_of_articles_label">Number of Articles to Display</string>
+    <string name="settings_number_of_articles_key" translatable="false">number_of_articles</string>
+    <string name="settings_number_of_articles_default" translatable="false">10</string>
+
+    <!-- Strings For Order-By Preference [CHAR LIMIT=30] -->
+    <string name="settings_order_by_label">Order By</string>
+    <string name="settings_order_by_key" translatable="false">order_by</string>
+    <string name="settings_order_by_default" translatable="false">newest</string>
+
+    <!-- Label for order-by most recent (newest) option [CHAR LIMIT=20] -->
+    <string name="settings_order_by_newest_label">Newest</string>
+    <string name="settings_order_by_newest_value" translatable="false">newest</string>
+
+    <!-- Label for order-by oldest option [CHAR LIMIT=20] -->
+    <string name="settings_order_by_oldest_label">Oldest</string>
+    <string name="settings_order_by_oldest_value" translatable="false">oldest</string>
+
+
+    <string name="select_sections">Select Sections you are interested in</string>
+    <string name="sections">Sections</string>
+    <string name="sections_prefs_key">list_key</string>
+
 
 </resources>
