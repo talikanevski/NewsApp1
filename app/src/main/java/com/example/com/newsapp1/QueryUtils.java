@@ -17,10 +17,13 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import static com.example.com.newsapp1.MainActivity.LOG_TAG;
 
@@ -77,12 +80,15 @@ public final class QueryUtils {
                 /** Extract the value for the key called "webPublicationDate" **/
                 String webPublicationDate = currentArticle.getString("webPublicationDate");
 
-                /**substring(int start, int end) -
-                 * Returns a new String that starts at the start index
-                 * and goes up to (but doesn’t include) the end index.
-                 * https://developer.android.com/reference/java/lang/String?utm_source=udacity&utm_medium=course&utm_campaign=android_basics#substring(int,%20int)**/
-                date = webPublicationDate.substring(0, 10);
-                time = webPublicationDate.substring(12, 16);
+                date = formattedDate(webPublicationDate);
+                time = formatTime(webPublicationDate);
+
+//                /**substring(int start, int end) -
+//                 * Returns a new String that starts at the start index
+//                 * and goes up to (but doesn’t include) the end index.
+//                 * https://developer.android.com/reference/java/lang/String?utm_source=udacity&utm_medium=course&utm_campaign=android_basics#substring(int,%20int)**/
+//                date = webPublicationDate.substring(0, 10);
+//                time = webPublicationDate.substring(12, 16);
 
                 /** Extract the value for the key called "webUrl"**/
                 url = currentArticle.getString("webUrl");
@@ -108,16 +114,37 @@ public final class QueryUtils {
                 news.add(article);
             }
 
-
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash. Print a log message
             // with the message from the exception.
             Log.e("QueryUtils", "Problem parsing the news JSON results", e);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
 
         // Return the list of news
         return news;
+    }
+
+    private static String formatTime(String webPublicationTime) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'", Locale.getDefault());
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        Date articleTime = format.parse(webPublicationTime);
+        format.applyPattern("hh:mm");
+        webPublicationTime=format.format(articleTime);
+        return webPublicationTime;
+    }
+
+    private static String formattedDate(String webPublicationDate) throws ParseException {
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'", Locale.getDefault());
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        Date articleDate = format.parse(webPublicationDate);
+        format.applyPattern("MMM dd, yyyy");
+        webPublicationDate = format.format(articleDate);
+        return webPublicationDate;
+
     }
 
     /**

@@ -48,12 +48,10 @@ public class SettingsActivity extends AppCompatActivity {
             return true;
         }
 
-
-
         /**
          * This method takes in a Preference as its parameter,
          * and we use setOnPreferenceChangeListener to set
-         * the current EarthquakePreferenceFragment instance
+         * the current NewsPreferenceFragment instance
          * to listen for changes to the preference we pass in using:
          * <p>
          * preference.setOnPreferenceChangeListener(this);

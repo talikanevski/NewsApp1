@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class NewsAdapter extends ArrayAdapter<News> {
+public class    NewsAdapter extends ArrayAdapter<News> {
 
     private static final String LOG_TAG = NewsAdapter.class.getSimpleName();
 

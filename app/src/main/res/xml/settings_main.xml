@@ -3,12 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="@string/settings_title">
 
-    <MultiSelectListPreference
-        android:dialogTitle="@string/select_sections"
-        android:entries="@array/sections_names"
-        android:entryValues="@array/sections_values"
-        android:key="@string/sections_prefs_key"
-        android:title="@string/sections" />
+    <!--<MultiSelectListPreference-->
+        <!--android:dialogTitle="@string/select_sections"-->
+        <!--android:entries="@array/sections_names"-->
+        <!--android:entryValues="@array/sections_values"-->
+        <!--android:key="@string/sections_prefs_key"-->
+        <!--android:title="@string/sections" />-->
 
     <EditTextPreference
         android:defaultValue="@string/settings_number_of_articles_default"

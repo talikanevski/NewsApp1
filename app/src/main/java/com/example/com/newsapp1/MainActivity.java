@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     public static final String LOG_TAG = MainActivity.class.getName();
 
-    private static final String THE_GUARDIAN_REQUEST_URL ="https://content.guardianapis.com/search?api-key=4b884723-7021-4e84-a575-9fda381de06f";
+    private static final String THE_GUARDIAN_REQUEST_URL ="https://content.guardianapis.com/search?api-key=4b884723-7021-4e84-a575-9fda381de06f&order-date=published";
          /**   "https://content.guardianapis.com/search?show-tags=contributor&show-fields=thumbnail&page-size=20&from-date=2018-08-01&api-key=4b884723-7021-4e84-a575-9fda381de06f";
     /** https://content.guardianapis.com/search?show-tags=contributor&show-fields=thumbnail&page-size=20&api-key=4b884723-7021-4e84-a575-9fda381de06f
      * https://content.guardianapis.com/search?q=news%50AND%20OpinionAND%20cultureAnd%20lifestyle&show-fields=thumbnail&page-size=20&show-tags=contributor&api-key=4b884723-7021-4e84-a575-9fda381de06f**/
@@ -168,11 +168,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // buildUpon prepares the baseUri that we just parsed so we can add query parameters to it
         Uri.Builder uriBuilder = baseUri.buildUpon();
 
-        // Append query parameter and its value. For example, the `format=geojson`
+        // Append query parameter and its value.
         uriBuilder.appendQueryParameter("show-tags", "contributor");
         uriBuilder.appendQueryParameter("show-fields", "thumbnail");
         uriBuilder.appendQueryParameter("page-size", numberOfArticlesToDisplay);
-        uriBuilder.appendQueryParameter("orderby", orderBy);
+        uriBuilder.appendQueryParameter("order-by", orderBy);
 
         /** Return the completed uri  "https://content.guardianapis.com/search?api-key=4b884723-7021-4e84-a575-9fda381de06f&show-tags=contributor&show-fields=thumbnail&page-size=20&orderby=newest"; **/
 
@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     public void reload() {
-        getLoaderManager().restartLoader(1, null, this);
+        getLoaderManager().restartLoader(NEWS_LOADER_ID, null, this);
     }
 
     @Override

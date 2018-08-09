@@ -10,27 +10,27 @@
         <item>@string/settings_order_by_oldest_value</item>
     </string-array>
 
-    <string-array name="sections_names">
-        <item>US news</item>
-        <item>World news</item>
-        <item>technology</item>
-        <item>Business</item>
-        <item>Society</item>
-        <item>Culture</item>
-        <item>Science</item>
-        <item>Lifestyle</item>
-        <item>Environment</item>
-    </string-array>
+    <!--<string-array name="sections_names">-->
+        <!--<item>US news</item>-->
+        <!--<item>World news</item>-->
+        <!--<item>technology</item>-->
+        <!--<item>Business</item>-->
+        <!--<item>Society</item>-->
+        <!--<item>Culture</item>-->
+        <!--<item>Science</item>-->
+        <!--<item>Lifestyle</item>-->
+        <!--<item>Environment</item>-->
+    <!--</string-array>-->
 
-    <string-array name="sections_values">
-        <item>US news</item>
-        <item>World news</item>
-        <item>technology</item>
-        <item>Business</item>
-        <item>Society</item>
-        <item>Culture</item>
-        <item>Science</item>
-        <item>Lifestyle</item>
-        <item>Environment</item>
-    </string-array>
+    <!--<string-array name="sections_values">-->
+        <!--<item>US news</item>-->
+        <!--<item>World news</item>-->
+        <!--<item>technology</item>-->
+        <!--<item>Business</item>-->
+        <!--<item>Society</item>-->
+        <!--<item>Culture</item>-->
+        <!--<item>Science</item>-->
+        <!--<item>Lifestyle</item>-->
+        <!--<item>Environment</item>-->
+    <!--</string-array>-->
 </resources>
