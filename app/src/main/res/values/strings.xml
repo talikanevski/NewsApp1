@@ -22,9 +22,9 @@
     <string name="settings_order_by_oldest_label">Oldest</string>
     <string name="settings_order_by_oldest_value" translatable="false">oldest</string>
 
-    <!--<string name="select_sections">Select Sections you are interested in</string>-->
-    <!--<string name="sections">Sections</string>-->
-    <!--<string name="sections_prefs_key">list_key</string>-->
-
+    <string name="settings_from_date_label">News from date</string>
+    <string name="settings_from_date_key" translatable="false">news_from_date</string>
+    <string name="settings_from_date_default" translatable="false">2018-08-10</string>
+    <string name="hint">yyyy-mm-dd, for example 2018-08-10</string>
 
 </resources>

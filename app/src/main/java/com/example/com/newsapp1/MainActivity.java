@@ -20,19 +20,41 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<News>> {
 
     public static final String LOG_TAG = MainActivity.class.getName();
 
-    private static final String THE_GUARDIAN_REQUEST_URL ="https://content.guardianapis.com/search?api-key=4b884723-7021-4e84-a575-9fda381de06f&order-date=published";
-         /**   "https://content.guardianapis.com/search?show-tags=contributor&show-fields=thumbnail&page-size=20&from-date=2018-08-01&api-key=4b884723-7021-4e84-a575-9fda381de06f";
-    /** https://content.guardianapis.com/search?show-tags=contributor&show-fields=thumbnail&page-size=20&api-key=4b884723-7021-4e84-a575-9fda381de06f
-     * https://content.guardianapis.com/search?q=news%50AND%20OpinionAND%20cultureAnd%20lifestyle&show-fields=thumbnail&page-size=20&show-tags=contributor&api-key=4b884723-7021-4e84-a575-9fda381de06f**/
-    /**
-     * Constant value for the earthquake loader ID. We can choose any integer.
+    private static final String THE_GUARDIAN ="https://content.guardianapis.com/search?";
+    private static final String API_Key = "api-key=4b884723-7021-4e84-a575-9fda381de06f";
+
+//    static Calendar calendar = Calendar.getInstance();
+//    static Date currentTime = calendar.getTime();
+//    static Date twoDaysAgo = substractDays(currentTime,2);
+//
+//    static String fromDate;
+//
+//    static {
+//        try {
+//            fromDate = formattedDate(String.valueOf(twoDaysAgo));
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+    private static final String THE_GUARDIAN_REQUEST_URL = THE_GUARDIAN + API_Key;
+
+//    + "&from-date=" +fromDate
+
+    /**Constant value for the earthquake loader ID. We can choose any integer.
      */
     private static final int NEWS_LOADER_ID = 1;
 
@@ -54,29 +76,29 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Find a reference to the {@link ListView} in the layout
+        /** Find a reference to the {@link ListView} in the layout**/
         ListView newsListView = (ListView) findViewById(R.id.list);
 
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
         newsListView.setEmptyView(mEmptyStateTextView);
 
-        // Create a new {@link ArrayAdapter} of news
-        // Create a new adapter that takes an empty list of news as input
+        /**Create a new {@link ArrayAdapter} of news
+        // Create a new adapter that takes an empty list of news as input**/
         mAdapter = new NewsAdapter(this, new ArrayList<News>());
 
-        // Set the adapter on the {@link ListView}
-        // so the list can be populated in the user interface
+        /**Set the adapter on the {@link ListView}
+        // so the list can be populated in the user interface**/
         newsListView.setAdapter(mAdapter);
 
-        // Set an item click listener on the ListView, which sends an intent to a web browser
-        // to open a website with more information about the selected earthquake.
+        /** Set an item click listener on the ListView, which sends an intent to a web browser
+        // to open a website with more information about the selected earthquake.**/
         newsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                // Find the current news article that was clicked on
+                /**Find the current news article that was clicked on**/
                 News currentArticle = mAdapter.getItem(position);
 
-                // Convert the String URL into a URI object (to pass into the Intent constructor)
+                /** Convert the String URL into a URI object (to pass into the Intent constructor)
                 /** The Intent constructor requires a Uri object, so we need to convert the URL
                  * (in the form of a String) into a URI.The news URL is a more specific form of a URI,
                  * so we can use the Uri.parse method**/
@@ -84,10 +106,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 Uri articleUri = Uri.parse(currentArticle.getUrl());
 
                 /** Once we have the website URL in a Uri object, we can create a new intent**/
-                // Create a new intent to view the earthquake URI
+                /**Create a new intent to view the earthquake URI**/
                 Intent websiteIntent = new Intent(Intent.ACTION_VIEW, articleUri);
 
-                // Send the intent to launch a new activity
+                /** Send the intent to launch a new activity**/
                 startActivity(websiteIntent);
             }
         });
@@ -99,10 +121,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        // Get details on the currently active default data network
+        /**Get details on the currently active default data network**/
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
-        // If there is a network connection, fetch data
+        /** If there is a network connection, fetch data**/
         if (networkInfo != null && networkInfo.isConnected()) {
 
             /** to retrieve a news article, we need to get the loader manager
@@ -113,12 +135,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
              *  This code goes inside the onCreate() method of the MainActivity,
              *  so that the loader can be initialized as soon as the app opens.**/
 
-            // Get a reference to the LoaderManager, in order to interact with loaders.
+            /**Get a reference to the LoaderManager, in order to interact with loaders.**/
             final LoaderManager loaderManager = getLoaderManager();
 
-            // Initialize the loader. Pass in the int ID constant defined above and pass in null for
+            /**Initialize the loader. Pass in the int ID constant defined above and pass in null for
             // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
-            // because this activity implements the LoaderCallbacks interface).
+            // because this activity implements the LoaderCallbacks interface).**/
 
             Log.i(LOG_TAG, "Test: calling initLoader");
 
@@ -135,12 +157,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     loading.setVisibility(View.VISIBLE);
                 }
             });
-        } else {// Otherwise, display error
-            // First, hide loading indicator so error message will be visible
+        } else {/** Otherwise, display error
+            // First, hide loading indicator so error message will be visible**/
             View loading = findViewById(R.id.loading_spinner);
             loading.setVisibility(View.GONE);
 
-            // Update empty state with no connection error message
+            /** Update empty state with no connection error message**/
             mEmptyStateTextView.setText(R.string.no_internet);
         }
     }
@@ -152,7 +174,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // getString retrieves a String value from the preferences. The second parameter is the default value for this preference.
+        /** getString retrieves a String value from the preferences.
+        // The second parameter is the default value for this preference.**/
+
+        String newsFromDate = sharedPrefs.getString(
+                getString(R.string.settings_from_date_key),
+                getString(R.string.settings_from_date_default));
+
         String numberOfArticlesToDisplay = sharedPrefs.getString(
                 getString(R.string.settings_number_of_articles_key),
                 getString(R.string.settings_number_of_articles_default));
@@ -162,15 +190,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 getString(R.string.settings_order_by_default)
         );
 
-        // parse breaks apart the URI string that's passed into its parameter
+        /** parse breaks apart the URI string that's passed into its parameter**/
         Uri baseUri = Uri.parse(THE_GUARDIAN_REQUEST_URL);
 
-        // buildUpon prepares the baseUri that we just parsed so we can add query parameters to it
+        /** buildUpon prepares the baseUri that we just parsed so we can add query parameters to it**/
         Uri.Builder uriBuilder = baseUri.buildUpon();
 
-        // Append query parameter and its value.
+        /**Append query parameter and its value.**/
         uriBuilder.appendQueryParameter("show-tags", "contributor");
         uriBuilder.appendQueryParameter("show-fields", "thumbnail");
+        uriBuilder.appendQueryParameter("from-date", newsFromDate);
         uriBuilder.appendQueryParameter("page-size", numberOfArticlesToDisplay);
         uriBuilder.appendQueryParameter("order-by", orderBy);
 
@@ -189,22 +218,22 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         /** in case the internet connection got lost in the middle**/
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        // Get details on the currently active default data network
+        /** Get details on the currently active default data network**/
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
         if (networkInfo != null && networkInfo.isConnected()) {
-            // Set empty state text to display "No news found."
+            /**Set empty state text to display "No news found."**/
             mEmptyStateTextView.setText(R.string.no_news);
-        } else// Update empty state with no connection error message
+        } else/** Update empty state with no connection error message**/
         {
             mEmptyStateTextView.setText(R.string.no_internet);
         }
 
-        // Clear the adapter of previous news data
         mAdapter.clear();
+        /** Clear the adapter of previous news data**/
 
-        // If there is a valid list of news, then add them to the adapter's
-        // data set. This will trigger the ListView to update.
+        /** If there is a valid list of news, then add them to the adapter's
+        // data set. This will trigger the ListView to update.**/
         if (news != null && !news.isEmpty()) {
             mAdapter.addAll(news);
         }
@@ -214,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onLoaderReset(Loader<List<News>> loader) {
         Log.i(LOG_TAG, "Test:  onLoaderReset called");
 
-        // Loader reset, so we can clear out our existing data.
+        /** Loader reset, so we can clear out our existing data.**/
         mAdapter.clear();
     }
 
@@ -223,11 +252,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     @Override
-    // This method initialize the contents of the Activity's options menu.
+   /** This method initialize the contents of the Activity's options menu.
     /** onCreateOptionsMenu() inflates the Options Menu specified in the XML
      * when the MainActivity opens up, it actually make it visible.**/
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the Options Menu we specified in XML
+        /** Inflate the Options Menu we specified in XML**/
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -258,4 +287,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
         return super.onOptionsItemSelected(item);
     }
+
+//    public static Date substractDays(Date d, int days)
+//    {
+//        d.setTime( d.getTime() - (long)days*1000*60*60*24 );
+//        return d;
+//    }
+//    private static String formattedDate(String dd) throws ParseException {
+//
+//        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'", Locale.getDefault());
+//        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+//        Date ddd = format.parse(String.valueOf(dd));
+//        format.applyPattern("yyyy-MM-dd");
+//        dd = format.format(ddd);
+//        return dd;
+//
+//    }
 }

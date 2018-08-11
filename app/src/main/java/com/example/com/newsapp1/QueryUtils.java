@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,29 +47,30 @@ public final class QueryUtils {
         String author;
         String thumbnail;
 
-        // If the JSON string is empty or null, then return early.
+
+        /**If the JSON string is empty or null, then return early.**/
         if (TextUtils.isEmpty(jsonResponse)) {
             return null;
         }
 
-        // Create an empty ArrayList that we can start adding news articles to
+        /**Create an empty ArrayList that we can start adding news articles to**/
         List<News> news = new ArrayList<>();
 
         try {
-            // Create a JSONObject from the JSON response string
+            /** Create a JSONObject from the JSON response string**/
             JSONObject baseJsonResponce = new JSONObject(jsonResponse);
 
-            // Extract the JSONObject associated with the key called "response",
+            /**Extract the JSONObject associated with the key called "response"**/
             JSONObject response = baseJsonResponce.getJSONObject("response");
 
-            // Extract the JSONArray associated with the key called "results",
-            // which represents a list of news articles.
+            /**Extract the JSONArray associated with the key called "results",
+            // which represents a list of news articles.**/
             JSONArray newsArray = response.getJSONArray("results");
 
-            // For each news article in the newsArray, create an news object
+            /** For each news article in the newsArray, create an news object**/
             for (int i = 0; i < newsArray.length(); i++) {
 
-                // Get a single news article at position i within the list of news articles.
+                /** Get a single news article at position i within the list of news articles.**/
                 JSONObject currentArticle = newsArray.getJSONObject(i);
 
                 /**Extract the value for the key called "sectionName"**/
@@ -93,15 +95,17 @@ public final class QueryUtils {
                 /** Extract the value for the key called "webUrl"**/
                 url = currentArticle.getString("webUrl");
 
-                /** Extract the value for the key called "fields"**/
-                JSONObject fields = currentArticle.getJSONObject("fields");
-                thumbnail = fields.getString("thumbnail");//if I am not sure that it will be a string there
-                //I can use fields.optString("thumbnail")...
+                thumbnail = "";
+                if(currentArticle.has("fields")) {
+                    /** Extract the value for the key called "fields"**/
+                    JSONObject fields = currentArticle.getJSONObject("fields");
+                    thumbnail = fields.getString("thumbnail");
+                }
 
                 /** Extract the value for the key called "tags" --> "webTitle",
                  * which represents author or "contributor"**/
                 JSONArray tagsArray = currentArticle.getJSONArray("tags");
-                //  in the tagsArray:
+                /**  in the tagsArray:      **/
                 contributor = "";
                 for (int j = 0; j < tagsArray.length(); j++) {
 
@@ -115,15 +119,15 @@ public final class QueryUtils {
             }
 
         } catch (JSONException e) {
-            // If an error is thrown when executing any of the above statements in the "try" block,
+             /** an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash. Print a log message
-            // with the message from the exception.
+            // with the message from the exception.**/
             Log.e("QueryUtils", "Problem parsing the news JSON results", e);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        // Return the list of news
+        /** Return the list of news  **/
         return news;
     }
 
@@ -144,7 +148,6 @@ public final class QueryUtils {
         format.applyPattern("MMM dd, yyyy");
         webPublicationDate = format.format(articleDate);
         return webPublicationDate;
-
     }
 
     /**
@@ -187,7 +190,7 @@ public final class QueryUtils {
     private static String makeHttpRequest(URL url) throws IOException {
         String jsonResponse = "";
 
-        // If the URL is null, then return early.
+        /** If the URL is null, then return early. **/
         if (url == null) {
             return jsonResponse;
         }
@@ -201,8 +204,8 @@ public final class QueryUtils {
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
 
-            // If the request was successful (response code 200),
-            // then read the input stream and parse the response.
+            /**If the request was successful (response code 200),
+            // then read the input stream and parse the response. **/
             if (urlConnection.getResponseCode() == 200) {
                 inputStream = urlConnection.getInputStream();
                 jsonResponse = readFromStream(inputStream);
@@ -216,9 +219,9 @@ public final class QueryUtils {
                 urlConnection.disconnect();
             }
             if (inputStream != null) {
-                // Closing the input stream could throw an IOException, which is why
+                /** Closing the input stream could throw an IOException, which is why
                 // the makeHttpRequest(URL url) method signature specifies than an IOException
-                // could be thrown.
+                // could be thrown. **/
                 inputStream.close();
             }
         }
@@ -267,10 +270,10 @@ public final class QueryUtils {
 //            e.printStackTrace();
 //        }
 
-        // Create URL object
+       /** Create URL object **/
         URL url = createUrl(requestUrl);
 
-        // Perform HTTP request to the URL and receive a JSON response back
+        /** Perform HTTP request to the URL and receive a JSON response back **/
         String jsonResponse = null;
         try {
             jsonResponse = makeHttpRequest(url);
@@ -278,7 +281,7 @@ public final class QueryUtils {
             Log.e(LOG_TAG, "Problem making the HTTP request.", e);
         }
 
-        // Extract relevant fields from the JSON response and create a list of News
+        /** Extract relevant fields from the JSON response and create a list of News **/
         List<News> news = extractFeatureFromJson(jsonResponse);
 
         // Return the list of news

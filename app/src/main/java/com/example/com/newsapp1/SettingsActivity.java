@@ -23,6 +23,9 @@ public class SettingsActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.settings_main);
 
+            Preference newsFromDate = findPreference(getString(R.string.settings_from_date_key));
+            bindPreferenceSummaryToValue(newsFromDate);
+
             Preference numberOfArticlesToDisplay = findPreference(getString(R.string.settings_number_of_articles_key));
             bindPreferenceSummaryToValue(numberOfArticlesToDisplay);
 
@@ -32,8 +35,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
-            // The code in this method takes care of updating the displayed preference summary
-            // after it has been changed
+            /** The code in this method takes care of updating the displayed preference summary
+            // after it has been changed **/
             String stringValue = value.toString();
             if (preference instanceof ListPreference) {
                 ListPreference listPreference = (ListPreference) preference;

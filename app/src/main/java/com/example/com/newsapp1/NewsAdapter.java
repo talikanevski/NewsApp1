@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class    NewsAdapter extends ArrayAdapter<News> {
+public class NewsAdapter extends ArrayAdapter<News> {
 
     private static final String LOG_TAG = NewsAdapter.class.getSimpleName();
 
@@ -59,7 +59,7 @@ public class    NewsAdapter extends ArrayAdapter<News> {
 
         /** Some of the articles have the author's name in the and of the article,
          * so I've decided to remove it**/
-        if (currentArticle.getTitle().contains(currentArticle.getAuthor()) && currentArticle.getAuthor()!= "") {
+        if (currentArticle.getTitle().contains(currentArticle.getAuthor()) && currentArticle.getAuthor() != "") {
             String[] parts = currentArticle.getTitle().split(currentArticle.getAuthor());
 
             titleTextView.setText(removeTheLastCharacter(parts[0]));
@@ -76,8 +76,12 @@ public class    NewsAdapter extends ArrayAdapter<News> {
         /** Find the View in the list_item.xml layout with the thumbnail of the of the current news article**/
         ImageView thumbnailImage = (ImageView) listItemView.findViewById(R.id.article_thumbnail);
         thumbnailImage.setImageBitmap(currentArticle.getThumbnail());
+        /** some of the articles have no any image**/
+        if (currentArticle.getThumbnail() == null) {
+            thumbnailImage.setImageResource(R.drawable.no_image_available);
+        }
 
-        // Return the list item view that is now showing the appropriate data
+        /**Return the list item view that is now showing the appropriate data**/
         return listItemView;
     }
 
